@@ -11,26 +11,87 @@ text when you need the reasoning or more examples.
 
 ## Workflow
 
-1. Identify the audience and what they already know before drafting.
-2. Draft, applying the rules below.
-3. Lint it. If the `vale` MCP tools are available, call `check_text` on the
-   draft (or `check_file` once it is saved) and fix what it reports. Set the
-   project up first if it has no Vale config; see the next section. Treat
-   `error` and `warning` as must-fix; weigh `suggestion` in context.
-4. Re-read the first sentence of each paragraph on its own. If that sequence
-   doesn't track, reorganize before polishing wording.
+Three passes, in order. Each catches what the one before it can't.
 
-Vale is a linter, not an author. It cannot tell you the document is aimed at
-the wrong audience or missing a prerequisite. Do that part yourself.
+### 1. Write to the specification
 
-Vale and these rules divide the work; they barely overlap. Vale also enforces
-style-guide mechanics this file doesn't list - contractions, first and
-second-person pronouns, American spelling, date, unit, and number formatting,
-punctuation, heading capitalization, anthropomorphism, unverifiable claims -
-so treat its alerts on those as authoritative rather than arguing with them.
-What Vale cannot see at all is everything below about pronoun ambiguity, weak
-verbs, list and table structure, paragraphs, document organization, audience,
-and error-message content. That part is yours.
+Identify the audience and what they already know, then draft against the rules
+below. They are the Google technical writing courses, condensed.
+
+### 2. Lint
+
+If the `vale` MCP tools are available, call `check_text` on the draft, or
+`check_file` once it's saved. Set the project up first if it has no Vale config;
+see the next section. Two layers come back:
+
+- **Specification** (`Google`, `TechWriting`, `GlobalEnglish`, `PlainLanguage`,
+  `Microcopy`, `A11y`). Treat `error` and `warning` as must-fix and weigh
+  `suggestion` in context. These enforce the mechanical half of the rules below
+  and a layer this file doesn't list - contractions, pronouns, American
+  spelling, punctuation, date and unit formatting, heading capitalization - so
+  take their verdict on those rather than arguing with it.
+- **AI tells** (`ai-tells`, always `suggestion`). Fingerprints of
+  machine-written prose: opening clichés, overused vocabulary, tricolons,
+  hedging, "it's worth noting", "not just X, but Y". Judge each one. The package
+  is calibrated for general prose, so a hit on genuine technical phrasing is a
+  false positive - fix the ones that are real and move on.
+
+### 3. Semantic pass
+
+Vale matches patterns; it cannot judge meaning, and it has no rule for anything
+below. Re-read the draft and answer these yourself. This pass is where most of
+the value is, because nothing else in the pipeline covers it.
+
+Structure:
+
+1. Does the opening state the scope, and the non-goals when they aren't obvious?
+2. Does it name the audience and the prerequisites?
+3. Are the key points in the first paragraph, so a reader can stop there?
+4. Read only the first sentence of each paragraph, in order. Does that sequence
+   tell the story? If not, reorganize before touching wording.
+5. Does each paragraph cover one topic?
+6. Does each heading say what the reader will learn? "Misc" and "Details" don't.
+7. Is the document organized around the reader's task, not the system's
+   architecture?
+
+Sentences and lists:
+
+8. Does any sentence carry two ideas? Split it. Vale only measures length, and
+   two ideas in fifteen words is still two ideas.
+9. Would a sentence with stacked clauses be clearer as a list?
+10. Is each list the right kind - numbered when reordering changes the meaning,
+    bulleted when it doesn't?
+11. Are list items parallel in part of speech, tense, and capitalization?
+12. Do steps start with an imperative verb?
+13. Does every list and table have a lead-in sentence ending in a colon?
+14. Do table column headings say what the column holds?
+
+Words:
+
+15. Is every unfamiliar term defined or linked on first use?
+16. Does each concept keep one name throughout? Vale checks a fixed list of
+    pairs only, not the names specific to this document.
+17. Any idiom, sports metaphor, or joke a non-native reader would miss?
+
+Code and figures:
+
+18. Is the sample code runnable, idiomatic, and short, and does the set range
+    from simple to complex?
+19. Do comments explain the non-obvious part instead of restating the code?
+20. Does each caption say what the figure shows, and does each diagram carry
+    one idea?
+
+Error messages:
+
+21. Does the message say what happened and what caused it?
+22. Does it quote the invalid input back?
+23. Does it state the requirement - the valid range or format?
+24. Does it show how to fix the problem, with an example if the fix has a shape?
+25. Is it concise without being cryptic?
+26. Is the wording right for whoever actually reads it?
+
+Report what you changed in each pass, and say which Vale suggestions you
+rejected and why. A suggestion silently ignored looks the same as one missed.
 
 ## Set up Vale in a project
 
@@ -41,22 +102,35 @@ style, and silently replacing it is not your call. Mention the difference if it
 conflicts with the guidance here.
 
 If none exists, write this to `.vale.ini` at the repository root so the project
-follows the same style these rules teach. Most of it comes from published
-packages - `Google` for the style guide, `GlobalEnglish` for bare pronouns and
-idioms, `PlainLanguage` for double negatives and length, `Microcopy` for
-error-message tone, `A11y` for alt text and headings - plus `TechWriting`, which
-ships with this plugin and holds the few course rules none of them covers:
+follows the same style these rules teach. It pulls the specification packages,
+`TechWriting` for the course rules none of them covers, and `ai-tells` for
+machine-prose fingerprints, downgraded to `suggestion` with the rules that
+contradict the courses switched off:
 
 ```ini
 StylesPath = .vale-styles
 MinAlertLevel = suggestion
 
-Packages = Google, GlobalEnglish, PlainLanguage, Microcopy, A11y, https://github.com/ntakezo/tech-writing-plugin/releases/latest/download/TechWriting.zip
+Packages = Google, GlobalEnglish, PlainLanguage, Microcopy, A11y, ai-tells, https://github.com/ntakezo/tech-writing-plugin/releases/latest/download/TechWriting.zip
 
 [*.{md,mdx,txt,rst,adoc,html}]
-BasedOnStyles = Vale, Google, GlobalEnglish, PlainLanguage, Microcopy, A11y, TechWriting
+BasedOnStyles = Vale, Google, GlobalEnglish, PlainLanguage, Microcopy, A11y, TechWriting, ai-tells
 
-# Prose inside source comments and docstrings.
+ai-tells = suggestion
+
+ai-tells.FormalTransitions = NO
+ai-tells.ColonUsage = NO
+ai-tells.CataphoricForecasting = NO
+ai-tells.Metacommentary = NO
+
+ai-tells.EmDashUsage = NO
+ai-tells.SemicolonUsage = NO
+ai-tells.FillerPhrases = NO
+ai-tells.NounString = NO
+
+ai-tells.FormalRegister = NO
+ai-tells.FillerIntensifier = NO
+
 [*.{go,ts,tsx,js,jsx,py,rs,java,rb,c,h,cc,cpp,sh}]
 BasedOnStyles = Vale, Google, GlobalEnglish, PlainLanguage, TechWriting
 Google.Headings = NO

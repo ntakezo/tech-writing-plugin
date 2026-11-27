@@ -19,8 +19,17 @@ Works in **Claude Code**, **Codex**, and **OpenCode**.
 | `src/install.ts` | `tech-writing-setup`, which wires the plugin into a project |
 | `scripts/vale-coverage.mjs` | Regenerates `docs/vale-coverage.md` by running Vale over a violation of every rule |
 
-The skill teaches the rules; Vale enforces what can be enforced. Most of that
-is already published, so the config pulls it rather than reimplementing it:
+Three passes over a draft, each catching what the one before it can't:
+
+1. **Write to the specification** - the Google technical writing courses,
+   condensed into the skill as the rules to draft against.
+2. **Lint** - Vale, in two layers. The specification packages below, plus
+   [`ai-tells`](https://github.com/tbhb/vale-ai-tells) for the fingerprints of
+   machine-written prose.
+3. **Semantic pass** - 26 review questions the skill asks the agent to answer
+   itself, covering scope, audience, organization, list and table structure,
+   figures, sample code, and error-message content. Vale has no rule for any of
+   them, which is why this pass carries most of the value.
 
 | Package | Covers |
 | --- | --- |
@@ -30,25 +39,38 @@ is already published, so the config pulls it rather than reimplementing it:
 | `Microcopy` | error-message tone: blame, vagueness, harshness |
 | `A11y` | alt text, heading order, table headers |
 | `TechWriting` | the seven course rules none of the above covers |
+| `ai-tells` | AI prose fingerprints, advisory only |
 
 Google publishes no Vale configuration of its own: `google/styleguide` has no
 `.vale.ini` and no styles directory, and `developers.google.com/style` never
 mentions Vale. The `Google` package is the Vale project's implementation of the
 published guide.
 
-`TechWriting` ships with this plugin as a release asset and is deliberately
-small. Each rule exists because measurement showed no package covers it, and
-each records that reason in the file - for instance `GlobalEnglish.BarePronoun`
-exempts a bare `It` before any verb but `is`/`was`, which is exactly the
-course's own example ("It has an almost cult-like following"), so
-`TechWriting.BarePronounVerb` covers only that remainder. Every rule carries
-Vale `tests` cases; run them with `vale test vale/packages/TechWriting`.
+`ai-tells` is calibrated for general prose, so it needs tuning for technical
+documentation. Measured on the courses themselves it reported **589 errors
+across 28,681 words** of the writing this plugin exists to imitate, including
+`FormalTransitions` on "For example" and `ColonUsage` on the colon before a
+list that the Lists and tables unit requires. The shipped config downgrades the
+style to `suggestion` and switches off the ten rules that either contradict the
+courses or duplicate an enabled package. After tuning:
 
-Together these enforce roughly **19 of the skill's 43 rules**.
+| Corpus | Alerts per 1,000 words |
+| --- | --- |
+| Google's course prose (human) | 5.1 |
+| This plugin's own docs (LLM-written) | 12.9 |
+| Deliberate AI slop | 203 |
+
+`TechWriting` ships as a release asset and is deliberately small. Each rule
+exists because measurement showed no package covers it, and records that reason
+in the file - `GlobalEnglish.BarePronoun` exempts a bare `It` before any verb
+but `is`/`was`, which is exactly the course's own example ("It has an almost
+cult-like following"), so `TechWriting.BarePronounVerb` covers only that
+remainder. Every rule carries Vale `tests` cases; run them with
+`vale test vale/packages/TechWriting`.
+
+The specification layer enforces about **20 of the skill's 43 rules**.
 `docs/vale-coverage.md` has the matrix and `node scripts/vale-coverage.mjs
---write` regenerates it. `write-good` and `proselint` are left off by default
-because they roughly double the alert count; add them per project for a wider
-net.
+--write` regenerates it. The other 23 are what the semantic pass is for.
 
 ## Setup
 
