@@ -14,27 +14,41 @@ Works in **Claude Code**, **Codex**, and **OpenCode**.
 | `skills/technical-writing/references/google-technical-writing-guide.md` | All three Google courses in full, for when a rule needs its rationale |
 | `mcp.json` | Wires [`vale-mcp`](https://github.com/ChrisChinchilla/Vale-MCP) so the agent can lint its own drafts |
 | `vale/.vale.ini` | Vale config, pulling the `Google` and `TechWriting` styles |
-| `vale/packages/TechWriting/` | Custom Vale rules for what `Google` leaves unchecked; published as a release asset |
+| `vale/packages/TechWriting/` | The seven Vale rules no published package covers; released as a zip |
 | `src/opencode.ts` | OpenCode plugin that registers the skill |
 | `src/install.ts` | `tech-writing-setup`, which wires the plugin into a project |
 | `scripts/vale-coverage.mjs` | Regenerates `docs/vale-coverage.md` by running Vale over a violation of every rule |
 
-The skill teaches the rules; Vale enforces what can be enforced. Two styles do
-that: `Google`, the official Vale implementation of the style guide, and
-`TechWriting`, which ships with this plugin and adds eleven rules from the
-courses that `Google` doesn't check - vague pronouns, weak verbs, filler,
-sentence length, missing alt text, term consistency, and error-message tone.
+The skill teaches the rules; Vale enforces what can be enforced. Most of that
+is already published, so the config pulls it rather than reimplementing it:
 
-Together they mechanically enforce **20 of the skill's 43 rules**, measured by
-running Vale over a minimal violation of each. `docs/vale-coverage.md` has the
-full matrix and `node scripts/vale-coverage.mjs --write` regenerates it. Every
-`TechWriting` rule was tuned against the courses themselves - 28,681 words of
-Google's own prose - so that it stays quiet on text that follows the guidance.
+| Package | Covers |
+| --- | --- |
+| `Google` | the style guide itself, maintained by the Vale project |
+| `GlobalEnglish` | bare pronouns, idioms, noun stacks |
+| `PlainLanguage` | double negatives, hidden verbs, sentence and paragraph length, simple words |
+| `Microcopy` | error-message tone: blame, vagueness, harshness |
+| `A11y` | alt text, heading order, table headers |
+| `TechWriting` | the seven course rules none of the above covers |
 
-Both implement the same Google style guide, so they agree where they meet. The
-skill also sets Vale up: on its first lint in a repository without a
-`.vale.ini`, it writes one configured for the `Google` package and runs
-`vale sync`, leaving an existing config alone.
+Google publishes no Vale configuration of its own: `google/styleguide` has no
+`.vale.ini` and no styles directory, and `developers.google.com/style` never
+mentions Vale. The `Google` package is the Vale project's implementation of the
+published guide.
+
+`TechWriting` ships with this plugin as a release asset and is deliberately
+small. Each rule exists because measurement showed no package covers it, and
+each records that reason in the file - for instance `GlobalEnglish.BarePronoun`
+exempts a bare `It` before any verb but `is`/`was`, which is exactly the
+course's own example ("It has an almost cult-like following"), so
+`TechWriting.BarePronounVerb` covers only that remainder. Every rule carries
+Vale `tests` cases; run them with `vale test vale/packages/TechWriting`.
+
+Together these enforce roughly **19 of the skill's 43 rules**.
+`docs/vale-coverage.md` has the matrix and `node scripts/vale-coverage.mjs
+--write` regenerates it. `write-good` and `proselint` are left off by default
+because they roughly double the alert count; add them per project for a wider
+net.
 
 ## Setup
 

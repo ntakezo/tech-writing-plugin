@@ -5,7 +5,7 @@ Each row runs a minimal violation of one rule from `SKILL.md` through Vale and
 records what fired. Incidental alerts are hits on something other than the rule
 under test, so they don't count as enforcement.
 
-**16 of 43** rules in the skill are mechanically enforced by Vale.
+**19 of 43** rules in the skill are mechanically enforced by Vale.
 
 | Rule in SKILL.md | Enforced by Vale | Incidental alerts |
 | --- | --- | --- |
@@ -42,16 +42,16 @@ under test, so they don't count as enforcement.
 | Paragraphs: Headings say what the reader will learn | no | - |
 | Paragraphs: Caption every figure | **A11y.AltEmpty** | TechWriting.EmptyAlt |
 | Paragraphs: Comment the non-obvious part of sample code | no | - |
-| Errors: Say what happened, the cause, and the fix | no | TechWriting.VagueError |
+| Errors: Say what happened, the cause, and the fix | **TechWriting.VagueError** | - |
 | Errors: Identify and quote the invalid input | no | - |
 | Errors: State the requirement or constraint violated | no | - |
 | Errors: Show how to fix the problem | no | - |
 | Errors: Be concise but not cryptic | no | - |
-| Errors: Avoid double negatives | no | TechWriting.DoubleNegative |
+| Errors: Avoid double negatives | **PlainLanguage.DoubleNegatives, TechWriting.DoubleNegative** | Google.Contractions, Google.Semicolons |
 | Errors: Write for the target audience | no | - |
 | Errors: Do not blame the user | **Microcopy.Blame** | TechWriting.ErrorBlame |
 | Errors: Do not apologize theatrically or joke | **Microcopy.Vague** | TechWriting.ErrorApology, TechWriting.VagueError |
-| Errors: Do not swallow the root cause | no | TechWriting.VagueError |
+| Errors: Do not swallow the root cause | **TechWriting.VagueError** | - |
 
 ## The other direction
 
