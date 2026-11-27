@@ -16,10 +16,19 @@ Works in **Claude Code**, **Codex**, and **OpenCode**.
 | `vale/.vale.ini` | Vale config using the official `Google` style package |
 | `src/opencode.ts` | OpenCode plugin that registers the skill |
 | `src/install.ts` | `tech-writing-setup`, which wires the plugin into a project |
+| `scripts/vale-coverage.mjs` | Regenerates `docs/vale-coverage.md` by running Vale over a violation of every rule |
 
-The skill teaches the rules; Vale enforces the mechanical half of them. Vale's
-`Google` package is the Vale implementation of the same style guide, so the two
-agree rather than pulling in different directions.
+The skill teaches the rules; Vale enforces the mechanics. They overlap far less
+than you'd expect: measured by running Vale over a minimal violation of every
+rule, **5 of the skill's 42 rules** are mechanically enforced, and **28 of
+Vale's 36 rules** cover ground the skill never states. `docs/vale-coverage.md`
+has the full matrix, and `node scripts/vale-coverage.mjs --write` regenerates it
+against whatever Vale version you have.
+
+Both implement the same Google style guide, so they agree where they meet. The
+skill also sets Vale up: on its first lint in a repository without a
+`.vale.ini`, it writes one configured for the `Google` package and runs
+`vale sync`, leaving an existing config alone.
 
 ## Setup
 

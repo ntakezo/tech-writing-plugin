@@ -13,15 +13,61 @@ text when you need the reasoning or more examples.
 
 1. Identify the audience and what they already know before drafting.
 2. Draft, applying the rules below.
-3. Lint it. If the `vale` MCP tools are available, call `check_text` on the draft
-   (or `check_file` once it is saved) and fix what it reports. Vale's `Google`
-   style package enforces these same rules mechanically, so it catches what you
-   miss. Treat `error` and `warning` as must-fix; weigh `suggestion` in context.
+3. Lint it. If the `vale` MCP tools are available, call `check_text` on the
+   draft (or `check_file` once it is saved) and fix what it reports. Set the
+   project up first if it has no Vale config; see the next section. Treat
+   `error` and `warning` as must-fix; weigh `suggestion` in context.
 4. Re-read the first sentence of each paragraph on its own. If that sequence
    doesn't track, reorganize before polishing wording.
 
-Vale is a linter, not an author. It cannot tell you the document is aimed at the
-wrong audience or missing a prerequisite. Do that part yourself.
+Vale is a linter, not an author. It cannot tell you the document is aimed at
+the wrong audience or missing a prerequisite. Do that part yourself.
+
+Vale and these rules divide the work; they barely overlap. Vale also enforces
+style-guide mechanics this file doesn't list - contractions, first and
+second-person pronouns, American spelling, date, unit, and number formatting,
+punctuation, heading capitalization, anthropomorphism, unverifiable claims -
+so treat its alerts on those as authoritative rather than arguing with them.
+What Vale cannot see at all is everything below about pronoun ambiguity, weak
+verbs, list and table structure, paragraphs, document organization, audience,
+and error-message content. That part is yours.
+
+## Set up Vale in a project
+
+Before the first lint in a repository, check whether it has a `.vale.ini`.
+
+If one exists, leave it alone and lint with it. The project already chose a
+style, and silently replacing it is not your call. Mention the difference if it
+conflicts with the guidance here.
+
+If none exists, write this to `.vale.ini` at the repository root so the project
+follows the same Google style these rules teach:
+
+```ini
+StylesPath = .vale-styles
+MinAlertLevel = suggestion
+
+Packages = Google
+
+[*.{md,mdx,txt,rst,adoc,html}]
+BasedOnStyles = Vale, Google
+
+# Prose inside source comments and docstrings.
+[*.{go,ts,tsx,js,jsx,py,rs,java,rb,c,h,cc,cpp,sh}]
+BasedOnStyles = Vale, Google
+Google.Headings = NO
+```
+
+Then download the style package, which `.vale.ini` only names:
+
+```sh
+vale sync
+```
+
+Add `.vale-styles/` to `.gitignore` - it's downloaded, not authored. Say what
+you added and why; don't commit it as an unexplained change. If `vale` isn't
+installed, say so and point at `brew install vale` or
+<https://vale.sh/docs/install> rather than skipping the lint silently.
 
 ## Words
 
