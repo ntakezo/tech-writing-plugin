@@ -1,87 +1,44 @@
 # tech-writing
 
-An agent skill that carries Google's technical writing rules, paired with
-[Vale](https://vale.sh) for mechanical prose linting. The agent reaches for it
-when it writes or edits documentation.
+An agent skill that applies Google's technical writing rules, with [Vale](https://vale.sh)
+for linting. The agent reaches for it when it writes or edits documentation.
 
 Works in **Claude Code**, **Codex**, and **OpenCode**.
 
-## What's in it
+## How it works
 
-| Part | What it does |
-| --- | --- |
-| `skills/technical-writing/SKILL.md` | The rules the agent applies, and the trigger that makes it load them |
-| `skills/technical-writing/references/google-technical-writing-guide.md` | All three Google courses in full, for when a rule needs its rationale |
-| `mcp.json` | Wires [`vale-mcp`](https://github.com/ChrisChinchilla/Vale-MCP) so the agent can lint its own drafts |
-| `vale/.vale.ini` | Vale config, pulling the `Google` and `TechWriting` styles |
-| `vale/packages/TechWriting/` | The seven Vale rules no published package covers; released as a zip |
-| `src/opencode.ts` | OpenCode plugin that registers the skill |
-| `src/install.ts` | `tech-writing-setup`, which wires the plugin into a project |
-| `scripts/vale-coverage.mjs` | Regenerates `docs/vale-coverage.md` by running Vale over a violation of every rule |
+Three passes over a draft:
 
-Three passes over a draft, each catching what the one before it can't:
+1. **Write** to the rules in `skills/technical-writing/SKILL.md`.
+2. **Lint** with Vale, through the `vale` MCP server. Two layers: the style
+   packages below, and [`ai-tells`](https://github.com/tbhb/vale-ai-tells) for
+   the fingerprints of machine-written prose.
+3. **Semantic pass**: 26 review questions the agent answers itself, covering
+   scope, audience, organization, list and table structure, figures, sample
+   code, and error-message content. Vale has no rule for any of them.
 
-1. **Write to the specification** - the Google technical writing courses,
-   condensed into the skill as the rules to draft against.
-2. **Lint** - Vale, in two layers. The specification packages below, plus
-   [`ai-tells`](https://github.com/tbhb/vale-ai-tells) for the fingerprints of
-   machine-written prose.
-3. **Semantic pass** - 26 review questions the skill asks the agent to answer
-   itself, covering scope, audience, organization, list and table structure,
-   figures, sample code, and error-message content. Vale has no rule for any of
-   them, which is why this pass carries most of the value.
+## Install
 
-| Package | Covers |
-| --- | --- |
-| `Google` | the style guide itself, maintained by the Vale project |
-| `GlobalEnglish` | bare pronouns, idioms, noun stacks |
-| `PlainLanguage` | double negatives, hidden verbs, sentence and paragraph length, simple words |
-| `Microcopy` | error-message tone: blame, vagueness, harshness |
-| `A11y` | alt text, heading order, table headers |
-| `TechWriting` | the seven course rules none of the above covers |
-| `ai-tells` | AI prose fingerprints, advisory only |
-
-Google publishes no Vale configuration of its own: `google/styleguide` has no
-`.vale.ini` and no styles directory, and `developers.google.com/style` never
-mentions Vale. The `Google` package is the Vale project's implementation of the
-published guide.
-
-`ai-tells` is calibrated for general prose, so it needs tuning for technical
-documentation. Measured on the courses themselves it reported **589 errors
-across 28,681 words** of the writing this plugin exists to imitate, including
-`FormalTransitions` on "For example" and `ColonUsage` on the colon before a
-list that the Lists and tables unit requires. The shipped config downgrades the
-style to `suggestion` and switches off the ten rules that either contradict the
-courses or duplicate an enabled package. After tuning:
-
-| Corpus | Alerts per 1,000 words |
-| --- | --- |
-| Google's course prose (human) | 5.1 |
-| This plugin's own docs (LLM-written) | 12.9 |
-| Deliberate AI slop | 203 |
-
-`TechWriting` ships as a release asset and is deliberately small. Each rule
-exists because measurement showed no package covers it, and records that reason
-in the file - `GlobalEnglish.BarePronoun` exempts a bare `It` before any verb
-but `is`/`was`, which is exactly the course's own example ("It has an almost
-cult-like following"), so `TechWriting.BarePronounVerb` covers only that
-remainder. Every rule carries Vale `tests` cases; run them with
-`vale test vale/packages/TechWriting`.
-
-The specification layer enforces about **20 of the skill's 43 rules**.
-`docs/vale-coverage.md` has the matrix and `node scripts/vale-coverage.mjs
---write` regenerates it. The other 23 are what the semantic pass is for.
-
-## Setup
-
-Vale is a separate binary. Install it first:
+Vale is a separate binary:
 
 ```sh
-brew install vale          # or see https://vale.sh/docs/install
+brew install vale          # or https://vale.sh/docs/install
 ```
 
-For Claude Code, that's all the setup there is - see below. For Codex and
-OpenCode, run the installer from the project you want to write docs in:
+### Claude Code
+
+The repository is its own plugin marketplace:
+
+```sh
+claude plugin marketplace add ntakezo/tech-writing-plugin
+claude plugin install tech-writing@tech-writing-plugin
+```
+
+To work on a local clone instead, use `claude --plugin-dir /path/to/tech-writing-plugin`.
+
+### Codex and OpenCode
+
+Run the installer from the project you want to write docs in:
 
 ```sh
 git clone https://github.com/ntakezo/tech-writing-plugin
@@ -89,102 +46,76 @@ cd tech-writing-plugin && npm install && npm run build
 node dist/install.js --dir /path/to/your/project
 ```
 
-That writes a `.vale.ini`, runs `vale sync` to download the style package, and
-wires up whichever hosts you name (`claude`, `codex`, `opencode`, or all of
-them by default). It merges into existing config files and is safe to re-run.
+It writes `.vale.ini`, runs `vale sync`, and wires up the hosts you name
+(`claude`, `codex`, `opencode`, or all by default). Safe to re-run; it merges
+into existing config.
 
-## Per-host install
+To wire a host by hand:
 
-Each host has its own format; the package ships all three side by side. The
-Vale server is declared once, in the portable `mcp.json`: Codex reads that file
-natively, and the Claude Code manifest points at it with `"mcpServers":
-"./mcp.json"` rather than duplicating it as `.mcp.json`.
+- **Codex**: list the plugin in `<project>/.agents/plugins/marketplace.json`
+  with `"source": {"source": "local", "path": "./tech-writing-plugin"}`, then
+  set `[plugins."tech-writing@local"] enabled = true` in
+  `<project>/.codex/config.toml`. The plugin must sit inside the marketplace
+  root, because `source.path` has to be `./`-prefixed.
+- **OpenCode**: add the plugin directory to `plugins` and
+  `{"vale": {"type": "local", "command": ["npx", "-y", "vale-mcp@0.3.0"]}}` to
+  `mcp.servers` in `opencode.json`.
 
-### Claude Code
+For every project rather than one, put those entries in
+`~/.config/opencode/opencode.json`, or for Codex copy
+`skills/technical-writing` into `~/.agents/skills/` and add `[mcp_servers.vale]`
+to `~/.codex/config.toml`. Vale's own config stays per-project, since
+`.vale.ini` is how a project declares the style it follows.
 
-The repository is its own plugin marketplace, so install it in two commands:
+## Vale styles
+
+| Package | Covers |
+| --- | --- |
+| `Google` | the style guide itself, maintained by the Vale project |
+| `GlobalEnglish` | bare pronouns, idioms, noun stacks |
+| `PlainLanguage` | double negatives, hidden verbs, sentence length, and paragraph length |
+| `Microcopy` | error-message tone: blame, vagueness, harshness |
+| `A11y` | alt text, heading order, table headers |
+| `TechWriting` | the seven course rules no other package covers |
+| `ai-tells` | AI prose fingerprints, advisory only |
+
+Google publishes no Vale configuration of its own, so `Google` is the Vale
+project's implementation of the published guide.
+
+`ai-tells` is calibrated for general prose and misfires on technical
+documentation, so `vale/.vale.ini` downgrades it to `suggestion` and switches
+off ten rules, each with its reason. `write-good` and `proselint` are left off
+because they roughly double the alert count; add them per project for a wider
+net.
+
+The lint layer covers about 20 of the skill's 43 rules. `docs/vale-coverage.md`
+has the matrix of which, and what the semantic pass is left to catch.
+
+## Layout
+
+| Path | |
+| --- | --- |
+| `skills/technical-writing/SKILL.md` | the rules, and the trigger that loads them |
+| `skills/technical-writing/references/` | the three Google courses in full |
+| `vale/.vale.ini` | the Vale config the skill installs into a project |
+| `vale/packages/TechWriting/` | the custom rules, released as a zip |
+| `mcp.json` | the `vale-mcp` server that Claude Code and Codex both read |
+| `src/opencode.ts` | OpenCode plugin that registers the skill |
+| `src/install.ts` | the installer |
+| `scripts/vale-coverage.mjs` | regenerates `docs/vale-coverage.md` |
+
+## Development
 
 ```sh
-claude plugin marketplace add ntakezo/tech-writing-plugin
-claude plugin install tech-writing@tech-writing-plugin
+npm run build                            # TypeScript
+npm run build:style                      # TechWriting.zip for a release
+vale test vale/packages/TechWriting      # the custom rules' own tests
+node scripts/vale-coverage.mjs --write   # regenerate the coverage matrix
 ```
-
-`.claude-plugin/plugin.json` is the manifest and `skills/` is picked up from the
-standard layout. To hack on a local clone instead, skip the install and run
-`claude --plugin-dir /path/to/tech-writing-plugin`.
-
-### Codex
-
-Codex reads a plugin from a marketplace catalog. The plugin has to sit inside
-the marketplace root, because `source.path` must be a `./`-prefixed relative
-path:
-
-```jsonc
-// <project>/.agents/plugins/marketplace.json
-{
-  "name": "local",
-  "plugins": [
-    { "name": "tech-writing", "source": { "source": "local", "path": "./tech-writing-plugin" } }
-  ]
-}
-```
-
-```toml
-# <project>/.codex/config.toml
-[plugins."tech-writing@local"]
-enabled = true
-```
-
-`plugin.json` is the portable [Agent Plugins](https://agent-plugins.org) 1.0.0
-manifest, which Codex reads directly.
-
-### OpenCode
-
-OpenCode loads the TypeScript plugin and the Vale server from config:
-
-```jsonc
-// opencode.json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "plugins": ["/path/to/tech-writing-plugin"],
-  "mcp": {
-    "servers": {
-      "vale": { "type": "local", "command": ["npx", "-y", "vale-mcp@0.3.0"] }
-    }
-  }
-}
-```
-
-OpenCode discovers skills from its own directories, so `src/opencode.ts`
-registers this package's skill through `ctx.skill.transform` rather than asking
-you to copy files around.
-
-## Install globally
-
-To make the skill available in every project instead of one:
-
-- **Claude Code** — keep using `--plugin-dir`, or add the directory to a
-  marketplace and install it to your user scope.
-- **Codex** — skip the plugin and drop the skill straight into the user skills
-  directory, which Codex scans on every session:
-  ```sh
-  cp -R skills/technical-writing ~/.agents/skills/technical-writing
-  ```
-  Then add Vale to `~/.codex/config.toml`:
-  ```toml
-  [mcp_servers.vale]
-  command = "npx"
-  args = ["-y", "vale-mcp@0.3.0"]
-  ```
-- **OpenCode** — put the same `plugins` and `mcp.servers` entries shown above in
-  `~/.config/opencode/opencode.json`.
-
-Vale's own config stays per-project, since `.vale.ini` is how a project declares
-which style it follows.
 
 ## Licensing
 
-Plugin code is MIT (see `LICENSE`). The Google course text under
+Plugin code is MIT (`LICENSE`). The Google course text under
 `skills/technical-writing/references/` is Google's work under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), not MIT. `NOTICE`
-lists that and the other third-party content.
+lists it and the other third-party content.
