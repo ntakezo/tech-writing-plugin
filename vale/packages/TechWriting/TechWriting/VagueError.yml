@@ -1,0 +1,11 @@
+extends: existence
+message: "'%s' tells the reader nothing; name the cause and the fix."
+link: 'https://developers.google.com/tech-writing/error-messages/identify-the-cause'
+level: warning
+ignorecase: true
+tokens:
+  - something went wrong
+  - an (?:unknown|unexpected) error
+  - unknown error
+  - operation failed
+  - internal error

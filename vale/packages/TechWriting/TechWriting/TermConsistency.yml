@@ -1,0 +1,15 @@
+extends: consistency
+message: "Use one of '%s' throughout, not both."
+link: 'https://developers.google.com/tech-writing/one/words#use_terms_consistently'
+level: warning
+ignorecase: true
+# A starter set. Add the pairs your own product confuses: the course's point is
+# that one concept keeps one name for the whole document.
+either:
+  backward: backwards
+  toward: towards
+  canceled: cancelled
+  data center: datacenter
+  front end: frontend
+  back end: backend
+  web site: website

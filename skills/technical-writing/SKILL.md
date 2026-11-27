@@ -41,20 +41,22 @@ style, and silently replacing it is not your call. Mention the difference if it
 conflicts with the guidance here.
 
 If none exists, write this to `.vale.ini` at the repository root so the project
-follows the same Google style these rules teach:
+follows the same style these rules teach. `Google` is the official Vale
+implementation of the style guide; `TechWriting` ships with this plugin and
+adds the course rules Google's package doesn't check:
 
 ```ini
 StylesPath = .vale-styles
 MinAlertLevel = suggestion
 
-Packages = Google
+Packages = Google, https://github.com/ntakezo/tech-writing-plugin/releases/latest/download/TechWriting.zip
 
 [*.{md,mdx,txt,rst,adoc,html}]
-BasedOnStyles = Vale, Google
+BasedOnStyles = Vale, Google, TechWriting
 
 # Prose inside source comments and docstrings.
 [*.{go,ts,tsx,js,jsx,py,rs,java,rb,c,h,cc,cpp,sh}]
-BasedOnStyles = Vale, Google
+BasedOnStyles = Vale, Google, TechWriting
 Google.Headings = NO
 ```
 

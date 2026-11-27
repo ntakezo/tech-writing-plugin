@@ -1,0 +1,11 @@
+extends: existence
+message: "Don't blame the reader ('%s'); state the cause and the fix."
+link: 'https://developers.google.com/tech-writing/error-messages/set-tone'
+level: warning
+ignorecase: true
+tokens:
+  - you forgot
+  - you failed to
+  - you neglected
+  - you should have
+  - your mistake

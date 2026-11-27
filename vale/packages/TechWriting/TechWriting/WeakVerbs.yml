@@ -1,0 +1,11 @@
+extends: existence
+message: "Replace the weak verb in '%s' with a specific one."
+link: 'https://developers.google.com/tech-writing/one/clear-sentences'
+level: warning
+ignorecase: true
+# Only the constructions the course names. Bare 'occurs' is often correct
+# ('the error occurs in the parser'), so each token requires its weak frame.
+tokens:
+  - (?:occurs|occurred|happens|happened) when
+  - (?:is|are|was|were) performed by
+  - takes place

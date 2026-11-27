@@ -1,0 +1,16 @@
+extends: substitution
+message: "Use '%s' instead of '%s'."
+link: 'https://developers.google.com/tech-writing/one/short-sentences'
+level: warning
+ignorecase: true
+action:
+  name: replace
+# 'in order to' is already Google.WordListCase; don't duplicate it.
+swap:
+  the fact that: that
+  in order for: for
+  in the event that: if
+  at this point in time: now
+  has the ability to: can
+  is able to: can
+  utilizes?: use

@@ -1,0 +1,11 @@
+extends: existence
+message: "Rewrite '%s' without the double negative."
+link: 'https://developers.google.com/tech-writing/error-messages/avoid-double-negatives'
+level: warning
+ignorecase: true
+# The un- words are listed explicitly: a bare 'not un\w+' also matches
+# 'not understand', 'not undertake', 'not until', which are not negations.
+tokens:
+  - "(?:not|isn't|aren't|wasn't|weren't) un(?:able|available|aware|clear|common|changed|affected|documented|important|installed|known|likely|necessary|related|set|supported|usual|used)\\b"
+  - "(?:don't|do not|never) fail to"
+  - not without

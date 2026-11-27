@@ -1,6 +1,6 @@
 {
   "name": "tech-writing-plugin",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Google's technical writing rules as an agent skill, with Vale prose linting. Works in Claude Code, Codex, and OpenCode.",
   "type": "module",
   "license": "MIT",
@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "build:style": "cd vale/packages/TechWriting && rm -f ../../../TechWriting.zip && zip -qr ../../../TechWriting.zip TechWriting",
     "setup": "node dist/install.js"
   },
   "dependencies": {
