@@ -85,11 +85,31 @@ project's implementation of the published guide.
 `ai-tells` targets technical documentation as well, but on a few points it
 encodes a stricter house style than the Google guide: it bans the em dash
 outright, flags "For example" among its connectives, and flags the `**Note:**`
-callout. So `vale/.vale.ini` runs it at `suggestion` and switches off eight
-rules, each with its reason recorded there. Six would contradict the courses;
-two report what an enabled package already covers. `write-good` and `proselint`
-are left off because they roughly double the alert count; add them per project
-for a wider net.
+callout. So `vale/.vale.ini` runs it at `suggestion` and switches off the rules
+that would contradict the courses, with each reason recorded there.
+`write-good` and `proselint` are left off because they roughly double the alert
+count; add them per project for a wider net.
+
+### Measurement
+
+`scripts/corpus-measure.sh` runs the config over four unrelated house styles,
+each pinned to a late-2022 commit so the prose predates widespread
+LLM-assisted writing: the Kubernetes website, Django, the Rust Book, and MDN.
+About 137,000 words.
+
+On that corpus the config reports **68 alerts per 1,000 words, of which 7.7 are
+errors or warnings**. Read the must-fix tier first: it is the mechanical layer,
+and on this corpus it is almost entirely the Google word list, sentence-case
+headings, Latin abbreviations, and punctuation.
+
+The suggestion tier is large because none of these projects follows the Google
+guide. Its bulk is passive voice, sentence length, contractions, "will", and
+"we", and spot-checking says those findings are correct: the number measures
+how far a house style sits from Google's, not how noisy the linter is. Tuning
+removed what was actually wrong, not what was merely numerous: three pairs of
+rules reporting the same finding twice, one rule that flagged every
+parenthetical, one that read any three verbs as a rhetorical tricolon, and
+spelling, which without a project vocabulary flags code identifiers.
 
 `TechWriting` is the only style written for this plugin. Vale installs styles
 from a URL, so it ships as `TechWriting.zip` on the releases page, and
@@ -111,6 +131,7 @@ has the matrix of which, and what the semantic pass is left to catch.
 | `src/opencode.ts` | OpenCode plugin that registers the skill |
 | `src/install.ts` | the installer |
 | `scripts/vale-coverage.mjs` | regenerates `docs/vale-coverage.md` |
+| `scripts/corpus-measure.sh` | measures the config against third-party docs |
 
 ## Development
 
@@ -119,6 +140,7 @@ npm run build                            # TypeScript
 npm run build:style                      # TechWriting.zip for a release
 vale test vale/packages/TechWriting      # the custom rules' own tests
 node scripts/vale-coverage.mjs --write   # regenerate the coverage matrix
+scripts/corpus-measure.sh                # measure against third-party docs
 ```
 
 ## Licensing

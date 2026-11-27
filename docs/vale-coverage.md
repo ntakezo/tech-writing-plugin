@@ -9,17 +9,17 @@ under test, so they don't count as enforcement.
 
 | Rule in SKILL.md | Enforced by Vale | Incidental alerts |
 | --- | --- | --- |
-| Words: Define new or unfamiliar terms on first use | **Google.Acronyms** | PlainLanguage.Acronyms |
+| Words: Define new or unfamiliar terms on first use | **Google.Acronyms** | - |
 | Words: Use one term per concept, consistently | **TechWriting.TermConsistency** | - |
-| Words: Spell out an acronym on first use, bold both forms | **Google.Acronyms** | PlainLanguage.Acronyms, Vale.Spelling, ai-tells.BareHolds |
-| Words: Replace ambiguous pronouns (it/they) | **TechWriting.BarePronounVerb** | GlobalEnglish.While, Google.Passive, PlainLanguage.PassiveVoice |
+| Words: Spell out an acronym on first use, bold both forms | **Google.Acronyms** | Vale.Spelling, ai-tells.BareHolds |
+| Words: Replace ambiguous pronouns (it/they) | **TechWriting.BarePronounVerb** | GlobalEnglish.While, Google.Passive |
 | Words: Replace ambiguous pronouns (this/that) | **GlobalEnglish.BarePronoun** | - |
-| Verbs: Prefer active voice | **Google.Passive** | PlainLanguage.PassiveVoice |
+| Verbs: Prefer active voice | **Google.Passive** | - |
 | Verbs: Prefer a strong verb over a weak one (occurs) | **TechWriting.WeakVerbs** | - |
 | Verbs: Prefer a strong verb over a weak one (happens) | **TechWriting.WeakVerbs** | - |
 | Verbs: Write in the present tense; avoid will | **Google.Will** | - |
 | Sentences: One idea per sentence | no | GlobalEnglish.While |
-| Sentences: Keep sentences short (length is only a proxy for one idea) | **PlainLanguage.SentenceLength** | Vale.Spelling, ai-tells.VerbTricolon |
+| Sentences: Keep sentences short (length is only a proxy for one idea) | **PlainLanguage.SentenceLength** | Vale.Spelling |
 | Sentences: Cut filler: the fact that | **ai-tells.FillerPhrases** | - |
 | Sentences: Cut filler: in order to | **Google.WordListCase** | PlainLanguage.SimpleWords, ai-tells.FillerPhrases |
 | Sentences: Cut filler: it is important to note that | **TechWriting.Padding, ai-tells.HedgingPhrases** | GlobalEnglish.BarePronoun |
@@ -33,7 +33,7 @@ under test, so they don't count as enforcement.
 | Lists: Tables need informative column headings | no | - |
 | Lists: Introduce every list with a sentence and a colon | no | - |
 | Paragraphs: First sentence of a paragraph is its point | no | ai-tells.AbsoluteAssertions |
-| Paragraphs: One topic per paragraph | no | Google.Acronyms, PlainLanguage.Acronyms |
+| Paragraphs: One topic per paragraph | no | Google.Acronyms |
 | Paragraphs: State the document scope | no | - |
 | Paragraphs: State the audience and prerequisites | no | - |
 | Paragraphs: Summarize key points at the start | no | - |
@@ -60,7 +60,7 @@ that doesn't fire here means the sample failed to trigger it, not that the rule
 is absent - fix the sample.
 
 **28 of 36** Google rules cover ground the skill never mentions.
-All 36 of 36 fire on their sample.
+All 34 of 36 fire on their sample.
 
 | Google rule | Stated in SKILL.md | Fires |
 | --- | --- | --- |
@@ -85,12 +85,12 @@ All 36 of 36 fire on their sample.
 | Google.GenderBias | **no** | yes |
 | Google.Headings | **no** | yes |
 | Google.HeadingPunctuation | **no** | yes |
-| Google.Latin | **no** | yes |
+| Google.Latin | **no** | NO - FIX SAMPLE |
 | Google.LyHyphens | **no** | yes |
 | Google.OptionalPlurals | **no** | yes |
 | Google.Ordinal | **no** | yes |
 | Google.OxfordComma | **no** | yes |
-| Google.Parens | **no** | yes |
+| Google.Parens | **no** | NO - FIX SAMPLE |
 | Google.Periods | **no** | yes |
 | Google.Quotes | **no** | yes |
 | Google.Ranges | **no** | yes |

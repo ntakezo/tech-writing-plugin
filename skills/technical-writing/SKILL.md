@@ -119,17 +119,28 @@ BasedOnStyles = Vale, Google, GlobalEnglish, PlainLanguage, Microcopy, A11y, Tec
 ai-tells = suggestion
 
 ai-tells.FormalTransitions = NO
-ai-tells.ColonUsage = NO
-ai-tells.CataphoricForecasting = NO
 ai-tells.Metacommentary = NO
-
+ai-tells.CataphoricForecasting = NO
 ai-tells.EmDashUsage = NO
-ai-tells.SemicolonUsage = NO
-ai-tells.FillerPhrases = NO
-ai-tells.NounString = NO
-
 ai-tells.FormalRegister = NO
 ai-tells.FillerIntensifier = NO
+
+PlainLanguage.PassiveVoice = NO
+PlainLanguage.NounStack = NO
+PlainLanguage.Acronyms = NO
+Google.Latin = NO
+
+Vale.Spelling = suggestion
+Google.Colons = suggestion
+
+Google.Parens = NO
+ai-tells.VerbTricolon = NO
+
+Google.Will = suggestion
+Google.We = suggestion
+
+ai-tells.ColonUsage = NO
+ai-tells.NounString = NO
 
 [*.{go,ts,tsx,js,jsx,py,rs,java,rb,c,h,cc,cpp,sh}]
 BasedOnStyles = Vale, Google, GlobalEnglish, PlainLanguage, TechWriting
@@ -141,6 +152,11 @@ Then download the style package, which `.vale.ini` only names:
 ```sh
 vale sync
 ```
+
+If the lint comes back dominated by code identifiers that Vale reads as
+misspellings, add them to a project vocabulary at
+`.vale-styles/config/vocabularies/Project/accept.txt`, one term per line, rather
+than switching spelling off.
 
 Add `.vale-styles/` to `.gitignore` - it's downloaded, not authored. Say what
 you added and why; don't commit it as an unexplained change. If `vale` isn't
