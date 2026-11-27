@@ -108,7 +108,6 @@ machine-prose fingerprints, downgraded to `suggestion` with the rules that
 contradict the courses switched off:
 
 ```ini
-StylesPath = .vale-styles
 MinAlertLevel = suggestion
 
 Packages = Google, GlobalEnglish, PlainLanguage, Microcopy, A11y, ai-tells, https://github.com/ntakezo/tech-writing-plugin/releases/latest/download/TechWriting.zip
@@ -147,12 +146,11 @@ BasedOnStyles = Vale, Google, GlobalEnglish, PlainLanguage, TechWriting
 Google.Headings = NO
 ```
 
-Add `.vale-styles/` to `.gitignore` before you sync, not after. The sync writes
-nearly ten megabytes there, most of it Tree-sitter grammars that lint the
-comments in source files. `vale sync` downloads all of it, and rebuilds every
-byte from the preceding `Packages` line. Ignore the directory first, and no
-later `git add` sweeps it into a commit. Say what you added and why. Don't
-commit it as an unexplained change.
+The config doesn't set `StylesPath`, which is deliberate. Vale then reads one
+directory per machine, and every repository on it shares that directory. Run
+`vale ls-dirs` to print its location. A `StylesPath` in the project writes about
+ten megabytes into the repository instead, then writes the same ten megabytes
+into the next repository you lint.
 
 Then download the styles, which `.vale.ini` only names:
 
@@ -160,36 +158,34 @@ Then download the styles, which `.vale.ini` only names:
 vale sync
 ```
 
+The sync writes to the shared directory. The repository gains nothing to commit
+and nothing to ignore. Most of the download is Tree-sitter grammars, one for
+each language in the code-file glob. Those grammars let Vale lint the comments
+in source files.
+
 If `vale` isn't installed, say so and point at `brew install vale` or
 <https://vale.sh/docs/install> rather than skipping the lint silently.
 
+One directory contains one set of package versions. A project that pins its own
+versions needs `StylesPath` back. Set it to a local directory, add that
+directory to `.gitignore` before you sync, and say what you added and why. Git
+refuses to re-include a file when a rule excludes its parent directory. To keep
+a file inside an ignored directory, open one level at a time.
+
 If the lint comes back dominated by code identifiers that Vale reads as
-misspellings, add them to a project vocabulary at
-`.vale-styles/config/vocabularies/Project/accept.txt`, one term per line, rather
-than switching spelling off. Add `Vocab = Project` below `MinAlertLevel` in the
-same pass. Vale reads a vocabulary only when a setting names it. Each term
-accepts a regular expression, so `[Kk]afka` covers both casings. List those two
-spellings on separate lines instead, and Vale flags each one where the other
-belongs.
+misspellings, add them to a vocabulary rather than switching spelling off. Name
+the vocabulary after the project, because the next project reads the same
+directory. For a project named `kafka-ui`, write the terms one per line to
+`<StylesPath>/config/vocabularies/kafka-ui/accept.txt`. Then set `Vocab` to
+`kafka-ui` below `MinAlertLevel`. Vale reads a vocabulary only when a setting
+names it. Each term accepts a regular expression, so `[Kk]afka` covers both
+casings. List those two spellings on separate lines instead, and Vale flags each
+one where the other belongs.
 
-That vocabulary is the one file you author inside the directory you just
-ignored, because Vale resolves `Vocab` relative to `StylesPath`. Leave it
-untracked, and tell the reader what that costs. A fresh clone reads the
-project's own nouns as spelling suggestions again, which is noise at the lowest
-level rather than a broken lint.
-
-To track the vocabulary anyway, open one level at a time:
-
-```gitignore
-.vale-styles/*
-!.vale-styles/config/
-.vale-styles/config/*
-!.vale-styles/config/vocabularies/
-```
-
-Git refuses to re-include a file when a rule excludes its parent directory. So a
-`!` rule written under a plain `.vale-styles/` doesn't match the vocabulary,
-which then goes missing from the commit with no error to read.
+Tell the reader where you put that vocabulary and what it costs. The file is
+outside the repository. A fresh clone reads the project's own nouns as spelling
+suggestions until someone writes the file again. Those suggestions are noise at
+the lowest level rather than a broken lint.
 
 ## Words
 
