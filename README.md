@@ -82,18 +82,21 @@ to `~/.codex/config.toml`. Vale's own config stays per-project, since
 Google publishes no Vale configuration of its own, so `Google` is the Vale
 project's implementation of the published guide.
 
-`ai-tells` is calibrated for general prose and misfires on technical
-documentation, so `vale/.vale.ini` downgrades it to `suggestion` and switches
-off ten rules, each with its reason. `write-good` and `proselint` are left off
-because they roughly double the alert count; add them per project for a wider
-net.
+`ai-tells` targets technical documentation as well, but on a few points it
+encodes a stricter house style than the Google guide: it bans the em dash
+outright, flags "For example" among its connectives, and flags the `**Note:**`
+callout. So `vale/.vale.ini` runs it at `suggestion` and switches off eight
+rules, each with its reason recorded there. Six would contradict the courses;
+two report what an enabled package already covers. `write-good` and `proselint`
+are left off because they roughly double the alert count; add them per project
+for a wider net.
 
 `TechWriting` is the only style written for this plugin. Vale installs styles
 from a URL, so it ships as `TechWriting.zip` on the releases page, and
 `Packages` in `.vale.ini` points at that URL. `npm run build:style` rebuilds
 the zip from `vale/packages/TechWriting/`.
 
-The lint layer covers about 20 of the skill's 43 rules. `docs/vale-coverage.md`
+The lint layer covers 21 of the skill's 43 rules. `docs/vale-coverage.md`
 has the matrix of which, and what the semantic pass is left to catch.
 
 ## Layout

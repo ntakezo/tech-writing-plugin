@@ -1,7 +1,7 @@
-# What the enabled packages leave uncovered, verified by running each phrase
-# through the shipped config: PlainLanguage.SimpleWords and PlainLanguage.Wordy
-# take 'utilize', 'is able to', 'in the event that' and 'at this point in
-# time', and Google.WordListCase takes 'in order to'.
+# ai-tells.FillerPhrases carries 67 filler phrases, including "the fact that"
+# and "has the ability to"; PlainLanguage takes "utilize", "is able to", "in
+# the event that" and "at this point in time"; Google.WordListCase takes "in
+# order to". Only "in order for" is left uncovered.
 extends: substitution
 message: "Use '%s' instead of '%s'."
 link: 'https://developers.google.com/tech-writing/one/short-sentences'
@@ -11,9 +11,6 @@ action:
   name: replace
 swap:
   in order for: for
-  the fact that: that
-  has the ability to: can
-  have the ability to: can
 
 tests:
   - name: fires
@@ -21,13 +18,7 @@ tests:
       Set the flag in order for the cache to work.
     want: |
       1:14:TechWriting.Filler:Use 'for' instead of 'in order for'.
-  - name: fires on the uncovered wordiness
-    input: |
-      Note the fact that the server has the ability to cache.
-    want: |
-      1:6:TechWriting.Filler:Use 'that' instead of 'the fact that'.
-      1:31:TechWriting.Filler:Use 'can' instead of 'has the ability to'.
   - name: clean
     input: |
-      Note that the server can cache.
+      Set the flag so the cache works.
     want: ""

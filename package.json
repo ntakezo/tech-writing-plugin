@@ -1,6 +1,6 @@
 {
   "name": "tech-writing-plugin",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "Google's technical writing rules as an agent skill, with Vale prose linting. Works in Claude Code, Codex, and OpenCode.",
   "type": "module",
   "license": "MIT",

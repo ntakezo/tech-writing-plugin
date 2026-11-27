@@ -5,13 +5,13 @@ Each row runs a minimal violation of one rule from `SKILL.md` through Vale and
 records what fired. Incidental alerts are hits on something other than the rule
 under test, so they don't count as enforcement.
 
-**20 of 43** rules in the skill are mechanically enforced by Vale.
+**21 of 43** rules in the skill are mechanically enforced by Vale.
 
 | Rule in SKILL.md | Enforced by Vale | Incidental alerts |
 | --- | --- | --- |
 | Words: Define new or unfamiliar terms on first use | **Google.Acronyms** | PlainLanguage.Acronyms |
 | Words: Use one term per concept, consistently | **TechWriting.TermConsistency** | - |
-| Words: Spell out an acronym on first use, bold both forms | **Google.Acronyms** | PlainLanguage.Acronyms, Vale.Spelling |
+| Words: Spell out an acronym on first use, bold both forms | **Google.Acronyms** | PlainLanguage.Acronyms, Vale.Spelling, ai-tells.BareHolds |
 | Words: Replace ambiguous pronouns (it/they) | **TechWriting.BarePronounVerb** | GlobalEnglish.While, Google.Passive, PlainLanguage.PassiveVoice |
 | Words: Replace ambiguous pronouns (this/that) | **GlobalEnglish.BarePronoun** | - |
 | Verbs: Prefer active voice | **Google.Passive** | PlainLanguage.PassiveVoice |
@@ -19,10 +19,10 @@ under test, so they don't count as enforcement.
 | Verbs: Prefer a strong verb over a weak one (happens) | **TechWriting.WeakVerbs** | - |
 | Verbs: Write in the present tense; avoid will | **Google.Will** | - |
 | Sentences: One idea per sentence | no | GlobalEnglish.While |
-| Sentences: Keep sentences short (length is only a proxy for one idea) | **PlainLanguage.SentenceLength** | Vale.Spelling |
-| Sentences: Cut filler: the fact that | no | - |
-| Sentences: Cut filler: in order to | **Google.WordListCase** | PlainLanguage.SimpleWords |
-| Sentences: Cut filler: it is important to note that | **TechWriting.Padding** | GlobalEnglish.BarePronoun |
+| Sentences: Keep sentences short (length is only a proxy for one idea) | **PlainLanguage.SentenceLength** | Vale.Spelling, ai-tells.VerbTricolon |
+| Sentences: Cut filler: the fact that | **ai-tells.FillerPhrases** | - |
+| Sentences: Cut filler: in order to | **Google.WordListCase** | PlainLanguage.SimpleWords, ai-tells.FillerPhrases |
+| Sentences: Cut filler: it is important to note that | **TechWriting.Padding, ai-tells.HedgingPhrases** | GlobalEnglish.BarePronoun |
 | Sentences: Cut filler: utilize | **PlainLanguage.SimpleWords** | - |
 | Sentences: Split overloaded that/which clauses | no | - |
 | Sentences: Use that for dependent, which for non-essential | no | - |
@@ -32,13 +32,13 @@ under test, so they don't count as enforcement.
 | Lists: Convert an embedded run-in list into a real list | no | - |
 | Lists: Tables need informative column headings | no | - |
 | Lists: Introduce every list with a sentence and a colon | no | - |
-| Paragraphs: First sentence of a paragraph is its point | no | - |
+| Paragraphs: First sentence of a paragraph is its point | no | ai-tells.AbsoluteAssertions |
 | Paragraphs: One topic per paragraph | no | Google.Acronyms, PlainLanguage.Acronyms |
 | Paragraphs: State the document scope | no | - |
 | Paragraphs: State the audience and prerequisites | no | - |
 | Paragraphs: Summarize key points at the start | no | - |
 | Paragraphs: Avoid idioms and culturally specific metaphors | no | - |
-| Paragraphs: Prefer short, common words | **PlainLanguage.Legalese, PlainLanguage.SimpleWords** | - |
+| Paragraphs: Prefer short, common words | **PlainLanguage.Legalese, PlainLanguage.SimpleWords** | ai-tells.OverusedVocabulary |
 | Paragraphs: Headings say what the reader will learn | no | - |
 | Paragraphs: Caption every figure | **A11y.AltEmpty** | - |
 | Paragraphs: Comment the non-obvious part of sample code | no | - |
@@ -47,7 +47,7 @@ under test, so they don't count as enforcement.
 | Errors: State the requirement or constraint violated | no | - |
 | Errors: Show how to fix the problem | no | - |
 | Errors: Be concise but not cryptic | no | - |
-| Errors: Avoid double negatives | **PlainLanguage.DoubleNegatives, TechWriting.DoubleNegative** | Google.Contractions, Google.Semicolons |
+| Errors: Avoid double negatives | **PlainLanguage.DoubleNegatives, TechWriting.DoubleNegative** | Google.Contractions, Google.Semicolons, ai-tells.SemicolonUsage |
 | Errors: Write for the target audience | no | - |
 | Errors: Do not blame the user | **Microcopy.Blame** | - |
 | Errors: Do not apologize theatrically or joke | **Microcopy.Vague** | - |
