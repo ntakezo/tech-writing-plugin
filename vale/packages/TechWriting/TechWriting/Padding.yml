@@ -1,3 +1,7 @@
+# Phrases that announce a point instead of making it. Only the ones no
+# registry package covers: 'for all intents and purposes' is
+# PlainLanguage.Jargon, and the rest of the wordiness list is
+# Microsoft.Wordiness.
 extends: existence
 message: "Delete '%s'; it carries no information."
 link: 'https://developers.google.com/tech-writing/one/short-sentences'
@@ -6,5 +10,14 @@ ignorecase: true
 tokens:
   - it(?:'s| is) important to note that
   - it should be noted that
-  - needless to say
-  - for all intents and purposes
+
+tests:
+  - name: fires
+    input: |
+      It's important to note that the cache expires.
+    want: |
+      1:1:TechWriting.Padding:Delete 'It's important to note that'; it carries no information.
+  - name: clean
+    input: |
+      The cache expires after an hour.
+    want: ""

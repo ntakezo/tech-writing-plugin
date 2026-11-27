@@ -1,7 +1,0 @@
-extends: occurrence
-message: 'This sentence runs long; split it so each sentence carries one idea.'
-link: 'https://developers.google.com/tech-writing/one/short-sentences'
-level: suggestion
-scope: sentence
-token: '\b\w+\b'
-max: 32

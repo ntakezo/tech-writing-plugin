@@ -1,9 +1,0 @@
-extends: occurrence
-message: 'Give the image alt text that describes what it shows.'
-link: 'https://developers.google.com/tech-writing/two/illustrations'
-level: warning
-# `scope: alt` yields no instance for an empty alt, so existence can never see
-# one. Counting with min:1 is what detects the absence.
-scope: alt
-token: '\w+'
-min: 1

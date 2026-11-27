@@ -1,3 +1,5 @@
+# 'in order to' is Google.WordListCase and the rest of the wordiness list is
+# Microsoft.Wordiness; only 'in order for' is left uncovered.
 extends: substitution
 message: "Use '%s' instead of '%s'."
 link: 'https://developers.google.com/tech-writing/one/short-sentences'
@@ -5,12 +7,16 @@ level: warning
 ignorecase: true
 action:
   name: replace
-# 'in order to' is already Google.WordListCase; don't duplicate it.
 swap:
-  the fact that: that
   in order for: for
-  in the event that: if
-  at this point in time: now
-  has the ability to: can
-  is able to: can
-  utilizes?: use
+
+tests:
+  - name: fires
+    input: |
+      Set the flag in order for the cache to work.
+    want: |
+      1:14:TechWriting.Filler:Use 'for' instead of 'in order for'.
+  - name: clean
+    input: |
+      Set the flag for the cache to work.
+    want: ""

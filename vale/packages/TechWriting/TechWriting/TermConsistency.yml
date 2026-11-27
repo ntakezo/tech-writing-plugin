@@ -13,3 +13,14 @@ either:
   front end: frontend
   back end: backend
   web site: website
+
+tests:
+  - name: fires
+    input: |
+      Move backward through the list. Then move backwards again.
+    want: |
+      1:43:TechWriting.TermConsistency:Use one of 'backwards' throughout, not both.
+  - name: clean
+    input: |
+      Move backward through the list. Then move backward again.
+    want: ""

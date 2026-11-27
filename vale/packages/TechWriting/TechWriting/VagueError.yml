@@ -1,11 +1,21 @@
+# Microcopy.Vague catches 'something went wrong' and 'an unknown error
+# occurred' but not these two, which say even less.
 extends: existence
 message: "'%s' tells the reader nothing; name the cause and the fix."
 link: 'https://developers.google.com/tech-writing/error-messages/identify-the-cause'
 level: warning
 ignorecase: true
 tokens:
-  - something went wrong
-  - an (?:unknown|unexpected) error
-  - unknown error
   - operation failed
   - internal error
+
+tests:
+  - name: fires
+    input: |
+      Internal error.
+    want: |
+      1:1:TechWriting.VagueError:'Internal error' tells the reader nothing; name the cause and the fix.
+  - name: clean
+    input: |
+      Can't connect to the SQL database. Check that the host is reachable.
+    want: ""

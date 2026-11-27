@@ -1,0 +1,23 @@
+# GlobalEnglish.BarePronoun covers 'This'/'That' before any verb, and 'It
+# is'/'It was'. Its exception `^It(?=\s)(?!\s+(?:is|was)\b)` exempts a bare
+# 'It' before any other verb, so the course's own example - "Python is
+# interpreted, while C++ is compiled. It has an almost cult-like following." -
+# goes unflagged. This rule covers only that remainder.
+extends: existence
+message: "'%s' opens the sentence with no noun. Say what it refers to."
+link: 'https://developers.google.com/tech-writing/one/words#recognize_ambiguous_pronouns'
+level: suggestion
+scope: sentence
+tokens:
+  - '^(?:It|They)\s+(?:has|have|lets|means|allows|causes|makes|provides|requires)\b'
+
+tests:
+  - name: fires
+    input: |
+      C++ is compiled. It has an almost cult-like following.
+    want: |
+      1:18:TechWriting.BarePronounVerb:'It has' opens the sentence with no noun. Say what it refers to.
+  - name: clean
+    input: |
+      C++ is compiled. The language has an almost cult-like following.
+    want: ""

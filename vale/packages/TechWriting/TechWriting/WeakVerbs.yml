@@ -1,11 +1,23 @@
+# The Clear sentences unit: pick a verb that carries the action. Only the two
+# frames no registry package covers are listed. 'takes place' is
+# GlobalEnglish.PhrasalVerbs, and nominalizations ('make a decision') are
+# PlainLanguage.HiddenVerbs, so neither is repeated here.
 extends: existence
-message: "Replace the weak verb in '%s' with a specific one."
+message: "Replace the weak verb in '%s' with one that carries the action."
 link: 'https://developers.google.com/tech-writing/one/clear-sentences'
 level: warning
 ignorecase: true
-# Only the constructions the course names. Bare 'occurs' is often correct
-# ('the error occurs in the parser'), so each token requires its weak frame.
 tokens:
   - (?:occurs|occurred|happens|happened) when
   - (?:is|are|was|were) performed by
-  - takes place
+
+tests:
+  - name: fires
+    input: |
+      The exception occurs when the value is invalid.
+    want: |
+      1:15:TechWriting.WeakVerbs:Replace the weak verb in 'occurs when' with one that carries the action.
+  - name: clean
+    input: |
+      Dividing by zero raises the exception.
+    want: ""
