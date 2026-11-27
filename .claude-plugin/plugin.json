@@ -1,7 +1,7 @@
 {
   "name": "tech-writing",
   "displayName": "Technical Writing",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Google's technical writing rules as a skill, with Vale prose linting.",
   "author": { "name": "ntakezo", "url": "https://github.com/ntakezo" },
   "homepage": "https://github.com/ntakezo/tech-writing-plugin",

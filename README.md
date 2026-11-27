@@ -88,6 +88,11 @@ off ten rules, each with its reason. `write-good` and `proselint` are left off
 because they roughly double the alert count; add them per project for a wider
 net.
 
+`TechWriting` is the only style written for this plugin. Vale installs styles
+from a URL, so it ships as `TechWriting.zip` on the releases page, and
+`Packages` in `.vale.ini` points at that URL. `npm run build:style` rebuilds
+the zip from `vale/packages/TechWriting/`.
+
 The lint layer covers about 20 of the skill's 43 rules. `docs/vale-coverage.md`
 has the matrix of which, and what the semantic pass is left to catch.
 
@@ -98,7 +103,7 @@ has the matrix of which, and what the semantic pass is left to catch.
 | `skills/technical-writing/SKILL.md` | the rules, and the trigger that loads them |
 | `skills/technical-writing/references/` | the three Google courses in full |
 | `vale/.vale.ini` | the Vale config the skill installs into a project |
-| `vale/packages/TechWriting/` | the custom rules, released as a zip |
+| `vale/packages/TechWriting/` | source for the `TechWriting` Vale style |
 | `mcp.json` | the `vale-mcp` server that Claude Code and Codex both read |
 | `src/opencode.ts` | OpenCode plugin that registers the skill |
 | `src/install.ts` | the installer |
@@ -116,6 +121,8 @@ node scripts/vale-coverage.mjs --write   # regenerate the coverage matrix
 ## Licensing
 
 Plugin code is MIT (`LICENSE`). The Google course text under
-`skills/technical-writing/references/` is Google's work under
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), not MIT. `NOTICE`
-lists it and the other third-party content.
+`skills/technical-writing/references/` is Google's, under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) rather than MIT; each
+file carries its own source link. The Vale style packages and
+[`vale-mcp`](https://github.com/ChrisChinchilla/Vale-MCP) are MIT, used
+unmodified.
