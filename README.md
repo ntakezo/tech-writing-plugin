@@ -13,17 +13,23 @@ Works in **Claude Code**, **Codex**, and **OpenCode**.
 | `skills/technical-writing/SKILL.md` | The rules the agent applies, and the trigger that makes it load them |
 | `skills/technical-writing/references/google-technical-writing-guide.md` | All three Google courses in full, for when a rule needs its rationale |
 | `mcp.json` | Wires [`vale-mcp`](https://github.com/ChrisChinchilla/Vale-MCP) so the agent can lint its own drafts |
-| `vale/.vale.ini` | Vale config using the official `Google` style package |
+| `vale/.vale.ini` | Vale config, pulling the `Google` and `TechWriting` styles |
+| `vale/packages/TechWriting/` | Custom Vale rules for what `Google` leaves unchecked; published as a release asset |
 | `src/opencode.ts` | OpenCode plugin that registers the skill |
 | `src/install.ts` | `tech-writing-setup`, which wires the plugin into a project |
 | `scripts/vale-coverage.mjs` | Regenerates `docs/vale-coverage.md` by running Vale over a violation of every rule |
 
-The skill teaches the rules; Vale enforces the mechanics. They overlap far less
-than you'd expect: measured by running Vale over a minimal violation of every
-rule, **5 of the skill's 42 rules** are mechanically enforced, and **28 of
-Vale's 36 rules** cover ground the skill never states. `docs/vale-coverage.md`
-has the full matrix, and `node scripts/vale-coverage.mjs --write` regenerates it
-against whatever Vale version you have.
+The skill teaches the rules; Vale enforces what can be enforced. Two styles do
+that: `Google`, the official Vale implementation of the style guide, and
+`TechWriting`, which ships with this plugin and adds eleven rules from the
+courses that `Google` doesn't check - vague pronouns, weak verbs, filler,
+sentence length, missing alt text, term consistency, and error-message tone.
+
+Together they mechanically enforce **20 of the skill's 43 rules**, measured by
+running Vale over a minimal violation of each. `docs/vale-coverage.md` has the
+full matrix and `node scripts/vale-coverage.mjs --write` regenerates it. Every
+`TechWriting` rule was tuned against the courses themselves - 28,681 words of
+Google's own prose - so that it stays quiet on text that follows the guidance.
 
 Both implement the same Google style guide, so they agree where they meet. The
 skill also sets Vale up: on its first lint in a repository without a

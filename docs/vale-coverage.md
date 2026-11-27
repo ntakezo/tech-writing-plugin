@@ -5,24 +5,25 @@ Each row runs a minimal violation of one rule from `SKILL.md` through Vale and
 records what fired. Incidental alerts are hits on something other than the rule
 under test, so they don't count as enforcement.
 
-**5 of 42** rules in the skill are mechanically enforced by Vale.
+**20 of 43** rules in the skill are mechanically enforced by Vale.
 
 | Rule in SKILL.md | Enforced by Vale | Incidental alerts |
 | --- | --- | --- |
 | Words: Define new or unfamiliar terms on first use | **Google.Acronyms** | - |
-| Words: Use one term per concept, consistently | no | - |
+| Words: Use one term per concept, consistently | **TechWriting.TermConsistency** | - |
 | Words: Spell out an acronym on first use, bold both forms | **Google.Acronyms** | Vale.Spelling |
-| Words: Replace ambiguous pronouns (it/they) | no | Google.Passive |
-| Words: Replace ambiguous pronouns (this/that) | no | - |
+| Words: Replace ambiguous pronouns (it/they) | **TechWriting.AmbiguousPronoun** | Google.Passive |
+| Words: Replace ambiguous pronouns (this/that) | **TechWriting.AmbiguousPronoun** | - |
 | Verbs: Prefer active voice | **Google.Passive** | - |
-| Verbs: Prefer a strong verb over a weak one (occurs) | no | - |
-| Verbs: Prefer a strong verb over a weak one (happens) | no | - |
+| Verbs: Prefer a strong verb over a weak one (occurs) | **TechWriting.WeakVerbs** | - |
+| Verbs: Prefer a strong verb over a weak one (happens) | **TechWriting.WeakVerbs** | - |
 | Verbs: Write in the present tense; avoid will | **Google.Will** | - |
 | Sentences: One idea per sentence | no | - |
-| Sentences: Cut filler: the fact that | no | - |
+| Sentences: Keep sentences short (length is only a proxy for one idea) | **TechWriting.SentenceLength** | Vale.Spelling |
+| Sentences: Cut filler: the fact that | **TechWriting.Filler** | - |
 | Sentences: Cut filler: in order to | **Google.WordListCase** | - |
-| Sentences: Cut filler: it is important to note that | no | - |
-| Sentences: Cut filler: utilize | no | - |
+| Sentences: Cut filler: it is important to note that | **TechWriting.Padding** | - |
+| Sentences: Cut filler: utilize | **TechWriting.Filler** | - |
 | Sentences: Split overloaded that/which clauses | no | - |
 | Sentences: Use that for dependent, which for non-essential | no | - |
 | Lists: Numbered list for ordered items | no | - |
@@ -39,18 +40,18 @@ under test, so they don't count as enforcement.
 | Paragraphs: Avoid idioms and culturally specific metaphors | no | - |
 | Paragraphs: Prefer short, common words | no | - |
 | Paragraphs: Headings say what the reader will learn | no | - |
-| Paragraphs: Caption every figure | no | - |
+| Paragraphs: Caption every figure | **TechWriting.EmptyAlt** | - |
 | Paragraphs: Comment the non-obvious part of sample code | no | - |
-| Errors: Say what happened, the cause, and the fix | no | - |
+| Errors: Say what happened, the cause, and the fix | **TechWriting.VagueError** | - |
 | Errors: Identify and quote the invalid input | no | - |
 | Errors: State the requirement or constraint violated | no | - |
 | Errors: Show how to fix the problem | no | - |
 | Errors: Be concise but not cryptic | no | - |
-| Errors: Avoid double negatives | no | - |
+| Errors: Avoid double negatives | **TechWriting.DoubleNegative** | - |
 | Errors: Write for the target audience | no | - |
-| Errors: Do not blame the user | no | - |
-| Errors: Do not apologize theatrically or joke | no | - |
-| Errors: Do not swallow the root cause | no | - |
+| Errors: Do not blame the user | **TechWriting.ErrorBlame** | - |
+| Errors: Do not apologize theatrically or joke | **TechWriting.ErrorApology** | TechWriting.VagueError |
+| Errors: Do not swallow the root cause | **TechWriting.VagueError** | - |
 
 ## The other direction
 

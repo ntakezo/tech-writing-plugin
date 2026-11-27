@@ -4,7 +4,7 @@ link: 'https://developers.google.com/tech-writing/one/short-sentences'
 level: warning
 ignorecase: true
 tokens:
-  - it is important to note that
+  - it(?:'s| is) important to note that
   - it should be noted that
   - needless to say
   - for all intents and purposes
