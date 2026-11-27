@@ -25,47 +25,42 @@ Vale is a separate binary:
 brew install vale          # or https://vale.sh/docs/install
 ```
 
-### Claude Code
+Then install the plugin with your harness's own commands. Claude Code and Codex
+read the bundled `mcp.json`, so they pick up the Vale server with the plugin.
+OpenCode keeps MCP servers in its own config, hence the second command there.
 
-The repository is its own plugin marketplace:
+**Claude Code**
 
 ```sh
 claude plugin marketplace add ntakezo/tech-writing-plugin
 claude plugin install tech-writing@tech-writing-plugin
 ```
 
-To work on a local clone instead, use `claude --plugin-dir /path/to/tech-writing-plugin`.
-
-### Codex and OpenCode
-
-Run the installer from the project you want to write docs in:
+**Codex**
 
 ```sh
-git clone https://github.com/ntakezo/tech-writing-plugin
-cd tech-writing-plugin && npm install && npm run build
-node dist/install.js --dir /path/to/your/project
+codex plugin marketplace add ntakezo/tech-writing-plugin
+codex plugin add tech-writing
 ```
 
-It writes `.vale.ini`, runs `vale sync`, and wires up the hosts you name
-(`claude`, `codex`, `opencode`, or all by default). Safe to re-run; it merges
-into existing config.
+**OpenCode**
 
-To wire a host by hand:
+```sh
+opencode plugin add github:ntakezo/tech-writing-plugin
+opencode mcp add vale -- npx -y vale-mcp@0.3.0
+```
 
-- **Codex**: list the plugin in `<project>/.agents/plugins/marketplace.json`
-  with `"source": {"source": "local", "path": "./tech-writing-plugin"}`, then
-  set `[plugins."tech-writing@local"] enabled = true` in
-  `<project>/.codex/config.toml`. The plugin must sit inside the marketplace
-  root, because `source.path` has to be `./`-prefixed.
-- **OpenCode**: add the plugin directory to `plugins` and
-  `{"vale": {"type": "local", "command": ["npx", "-y", "vale-mcp@0.3.0"]}}` to
-  `mcp.servers` in `opencode.json`.
+The skill sets Vale up on its first lint in a repository that has no
+`.vale.ini`: it writes one configured for these styles and runs `vale sync`. To
+do that by hand instead:
 
-For every project rather than one, put those entries in
-`~/.config/opencode/opencode.json`, or for Codex copy
-`skills/technical-writing` into `~/.agents/skills/` and add `[mcp_servers.vale]`
-to `~/.codex/config.toml`. Vale's own config stays per-project, since
-`.vale.ini` is how a project declares the style it follows.
+```sh
+cp vale/.vale.ini /path/to/your/project/ && cd /path/to/your/project && vale sync
+```
+
+To work on a local clone, point the harness at the directory: Claude Code takes
+`--plugin-dir`, and Codex takes a local marketplace root with
+`codex plugin marketplace add ./path`.
 
 ## Vale styles
 
@@ -129,14 +124,13 @@ has the matrix of which, and what the semantic pass is left to catch.
 | `vale/packages/TechWriting/` | source for the `TechWriting` Vale style |
 | `mcp.json` | the `vale-mcp` server that Claude Code and Codex both read |
 | `src/opencode.ts` | OpenCode plugin that registers the skill |
-| `src/install.ts` | the installer |
 | `scripts/vale-coverage.mjs` | regenerates `docs/vale-coverage.md` |
 | `scripts/corpus-measure.sh` | measures the config against third-party docs |
 
 ## Development
 
 ```sh
-npm run build                            # TypeScript
+npm run build                            # the OpenCode plugin
 npm run build:style                      # TechWriting.zip for a release
 vale test vale/packages/TechWriting      # the custom rules' own tests
 node scripts/vale-coverage.mjs --write   # regenerate the coverage matrix
