@@ -1,0 +1,44 @@
+{
+  "name": "tech-writing-plugin",
+  "version": "1.0.0",
+  "description": "Google's technical writing rules as an agent skill, with Vale prose linting. Works in Claude Code, Codex, and OpenCode.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "tech-writing-setup": "./dist/install.js"
+  },
+  "exports": {
+    ".": "./src/opencode.ts"
+  },
+  "files": [
+    "src",
+    "dist",
+    "skills",
+    "vale",
+    "plugin.json",
+    "mcp.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "setup": "node dist/install.js"
+  },
+  "dependencies": {
+    "vale-mcp": "^0.3.0"
+  },
+  "devDependencies": {
+    "@opencode/plugin": "^2.4.2",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  },
+  "peerDependencies": {
+    "@opencode/plugin": "*"
+  },
+  "peerDependenciesMeta": {
+    "@opencode/plugin": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "tech-writing",
+  "version": "1.0.0",
+  "description": "Google's technical writing rules as a skill, with Vale prose linting.",
+  "author": { "name": "ntakezo", "url": "https://github.com/ntakezo" },
+  "homepage": "https://github.com/ntakezo/tech-writing-plugin",
+  "repository": "https://github.com/ntakezo/tech-writing-plugin",
+  "license": "MIT",
+  "keywords": ["documentation", "technical-writing", "style-guide", "vale", "prose"]
+}
