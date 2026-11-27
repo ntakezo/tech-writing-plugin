@@ -147,21 +147,49 @@ BasedOnStyles = Vale, Google, GlobalEnglish, PlainLanguage, TechWriting
 Google.Headings = NO
 ```
 
-Then download the style package, which `.vale.ini` only names:
+Add `.vale-styles/` to `.gitignore` before you sync, not after. The sync writes
+nearly ten megabytes there, most of it Tree-sitter grammars that lint the
+comments in source files. `vale sync` downloads all of it, and rebuilds every
+byte from the preceding `Packages` line. Ignore the directory first, and no
+later `git add` sweeps it into a commit. Say what you added and why. Don't
+commit it as an unexplained change.
+
+Then download the styles, which `.vale.ini` only names:
 
 ```sh
 vale sync
 ```
 
+If `vale` isn't installed, say so and point at `brew install vale` or
+<https://vale.sh/docs/install> rather than skipping the lint silently.
+
 If the lint comes back dominated by code identifiers that Vale reads as
 misspellings, add them to a project vocabulary at
 `.vale-styles/config/vocabularies/Project/accept.txt`, one term per line, rather
-than switching spelling off.
+than switching spelling off. Add `Vocab = Project` below `MinAlertLevel` in the
+same pass. Vale reads a vocabulary only when a setting names it. Each term
+accepts a regular expression, so `[Kk]afka` covers both casings. List those two
+spellings on separate lines instead, and Vale flags each one where the other
+belongs.
 
-Add `.vale-styles/` to `.gitignore` - it's downloaded, not authored. Say what
-you added and why; don't commit it as an unexplained change. If `vale` isn't
-installed, say so and point at `brew install vale` or
-<https://vale.sh/docs/install> rather than skipping the lint silently.
+That vocabulary is the one file you author inside the directory you just
+ignored, because Vale resolves `Vocab` relative to `StylesPath`. Leave it
+untracked, and tell the reader what that costs. A fresh clone reads the
+project's own nouns as spelling suggestions again, which is noise at the lowest
+level rather than a broken lint.
+
+To track the vocabulary anyway, open one level at a time:
+
+```gitignore
+.vale-styles/*
+!.vale-styles/config/
+.vale-styles/config/*
+!.vale-styles/config/vocabularies/
+```
+
+Git refuses to re-include a file when a rule excludes its parent directory. So a
+`!` rule written under a plain `.vale-styles/` doesn't match the vocabulary,
+which then goes missing from the commit with no error to read.
 
 ## Words
 
