@@ -133,7 +133,7 @@ which style it follows.
 
 ## Licensing
 
-Plugin code: MIT. The course text in
-`skills/technical-writing/references/` is Google's, licensed
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). `vale-mcp` is MIT and
-is used as a dependency, unmodified.
+Plugin code is MIT (see `LICENSE`). The Google course text under
+`skills/technical-writing/references/` is Google's work under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), not MIT. `NOTICE`
+lists that and the other third-party content.
